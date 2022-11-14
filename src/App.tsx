@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { useReactMediaRecorder } from "react-media-recorder";
+import supabase from "./lib/supabase";
 
-function App() {
+const Home = () => {
+  const [blob, setBlob] = useState<Blob>();
+  const [isRecorded, setIsRecorded] = useState(false);
+
+  const sendAudioFile = async (audioFile: Blob) => {
+    const formData = new FormData();
+    formData.append("audio-file", audioFile);
+    const { data, error } = await supabase.storage
+      .from("audio-recordings")
+      .upload("recording.wav", formData);
+
+    console.log(data, error);
+  };
+
+  const { status, startRecording, stopRecording, mediaBlobUrl } =
+    useReactMediaRecorder({
+      audio: true,
+      onStop: (_, blob) => {
+        setIsRecorded(true);
+        setBlob(blob);
+      },
+    });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <p>{status}</p>
+      <button onClick={startRecording}>Start Recording</button>
+      <button onClick={stopRecording}>Stop Recording</button>
+      <audio controls src={mediaBlobUrl}></audio>
+      <button
+        onClick={() => {
+          if (blob) sendAudioFile(blob);
+        }}
+        disabled={!isRecorded}
+      >
+        Save
+      </button>
     </div>
   );
-}
+};
 
-export default App;
+export default Home;
