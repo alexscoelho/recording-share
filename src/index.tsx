@@ -10,11 +10,27 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import Team, { loader as teamRecordingsLoader } from "./pages/Team";
+import AudioPlayer, {
+  loader as publicUrlLoader,
+} from "./components/AudioPlayer";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+  },
+  {
+    path: "team/:teamName",
+    loader: teamRecordingsLoader,
+    element: <Team />,
+    children: [
+      {
+        path: "recording/:recordingId",
+        element: <AudioPlayer />,
+        loader: publicUrlLoader,
+      },
+    ],
   },
 ]);
 

@@ -38,7 +38,7 @@ const Home = () => {
   const getPublicUrl = async (filename: string) => {
     const { data } = supabase.storage
       .from("audio-recordings")
-      .getPublicUrl(filename);
+      .getPublicUrl(`${selectedTeam}/${filename}`);
     if (data) setSignedUrl(data.publicUrl);
   };
 
