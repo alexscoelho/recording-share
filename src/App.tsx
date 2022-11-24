@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
 import supabase from "./lib/supabase";
-import Button from "@mui/material/Button";
-import BasicCard from "./components/Card";
 import HomePage from "./pages/HomePage";
 import { Team } from "./interfaces/core-interfaces";
+import SaveForm from "./components/SaveForm";
 
 const Home = () => {
   const [blob, setBlob] = useState<Blob>();
@@ -65,15 +64,6 @@ const Home = () => {
     if (data) setFiles(data);
   };
 
-  // Delete a file
-  const deleteFile = async (filePath: string) => {
-    let arrayPath = [];
-    arrayPath.push(filePath);
-    const { data, error } = await supabase.storage
-      .from("audio-recordings")
-      .remove(arrayPath);
-  };
-
   // Recording hook
   const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({
@@ -87,26 +77,7 @@ const Home = () => {
   return (
     <div>
       <HomePage teams={teams} />
-      <p>{status}</p>
-      <Button variant="contained">Hello World</Button>;
-      <input
-        onChange={(e) => setFileName(e.target.value)}
-        type="text"
-        placeholder="recording name"
-        value={fileName}
-      />
-      <select
-        value={selectedTeam}
-        name="team"
-        id="team"
-        onChange={(e) => setSelectedTeam(e.target.value)}
-      >
-        {teams?.map((team: Team) => (
-          <option key={team.id} value={team.name}>
-            {team.name}
-          </option>
-        ))}
-      </select>
+      <SaveForm teams={teams} />
       <p>{errorMessage}</p>
       <button onClick={startRecording}>Start Recording</button>
       <button onClick={stopRecording}>Stop Recording</button>
@@ -120,14 +91,6 @@ const Home = () => {
       >
         Save
       </button>
-      <ul>
-        {files?.map((file: any) => (
-          <li key={file.id}>
-            <button onClick={() => getPublicUrl(file.name)}>{file.name}</button>
-            <span onClick={() => deleteFile(file.name)}>X</span>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };

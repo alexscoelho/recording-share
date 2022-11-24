@@ -9,7 +9,7 @@ export default function HomePage({ teams }: any) {
       <Grid container spacing={2}>
         {teams?.map((team: Team) => {
           return (
-            <Grid item xs={4}>
+            <Grid key={team.id} item xs={4}>
               <BasicCard team={team} />
             </Grid>
           );
