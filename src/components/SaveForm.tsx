@@ -8,7 +8,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import { Team } from "../interfaces/core-interfaces";
 
-export default function SaveForm({ teams }: any) {
+export default function SaveForm({ teams, handleSubmit }: any) {
   const [selectedTeam, setSelectedTeam] = useState("");
   const [fileName, setFileName] = useState("");
 
@@ -24,6 +24,10 @@ export default function SaveForm({ teams }: any) {
       }}
       noValidate
       autoComplete="off"
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit(fileName, selectedTeam);
+      }}
     >
       <TextField
         required
@@ -49,7 +53,9 @@ export default function SaveForm({ teams }: any) {
           ))}
         </Select>
       </FormControl>
-      <Button variant="contained">Save</Button>
+      <Button type="submit" variant="contained">
+        Save
+      </Button>
     </Box>
   );
 }
